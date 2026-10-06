@@ -9,6 +9,9 @@ locals {
   component   = local.parsed.component
 }
 
+# Configure Terragrunt to use OpenTofu instead of Terraform
+terraform_binary = "tofu"
+
 # Configure remote state storage in Azure Storage Account
 remote_state {
   backend = "azurerm"
@@ -32,7 +35,7 @@ generate "provider" {
   if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 terraform {
-  required_version = ">= 1.5.0"
+  required_version = ">= 1.6.0"
   
   required_providers {
     azurerm = {
@@ -74,5 +77,6 @@ inputs = {
     Environment = local.environment
     ManagedBy   = "Terragrunt"
     Repository  = "Azure_landing_zone"
+    IaC         = "OpenTofu"
   }
 }
