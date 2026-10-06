@@ -1,0 +1,59 @@
+{
+  "properties": {
+    "displayName": "Enforce naming convention for resources",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy enforces naming conventions for Azure resources",
+    "metadata": {
+      "category": "Naming",
+      "version": "1.0.0"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "resourcePattern": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Resource Pattern",
+          "description": "Regex pattern for resource naming"
+        },
+        "defaultValue": "^[a-z]{2,4}-[a-z0-9-]+$"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "in": [
+              "Microsoft.Compute/virtualMachines",
+              "Microsoft.Storage/storageAccounts",
+              "Microsoft.Network/virtualNetworks",
+              "Microsoft.Network/networkSecurityGroups"
+            ]
+          },
+          {
+            "not": {
+              "field": "name",
+              "match": "[[parameters('resourcePattern')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[[parameters('effect')]"
+      }
+    }
+  }
+}
